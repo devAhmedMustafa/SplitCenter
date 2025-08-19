@@ -1,6 +1,6 @@
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
-from user import User
+from .user import User
 from repositories.session import get_db
 
 class UserRepository:

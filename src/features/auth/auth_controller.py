@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from auth_dtos import LoginResponse, TokenData
-from user_service import UserService, get_user_service
+from .auth_dtos import LoginResponse, TokenData
+from .user_service import UserService, get_user_service
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

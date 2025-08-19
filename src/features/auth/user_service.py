@@ -1,6 +1,6 @@
 from fastapi import Depends
 import requests 
-from user_repo import UserRepository, get_user_repository
+from .user_repo import UserRepository, get_user_repository
 from config.serttings import settings
 from .jwt import create_jwt_token
 
