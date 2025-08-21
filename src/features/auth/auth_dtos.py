@@ -5,5 +5,6 @@ class TokenData(BaseModel):
     
 
 class LoginResponse(BaseModel):
+    id: str
     email: str
     token: str
