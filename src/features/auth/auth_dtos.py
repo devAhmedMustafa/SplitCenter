@@ -1,10 +1,18 @@
 from pydantic import BaseModel
 
 class LoginRequest(BaseModel):
-    token: str
-    
+    username: str
+    password: str
+
+class SignupRequest(BaseModel):
+    username: str
+    password: str
+
+class SignupResponse(BaseModel):
+    id: str
+    username: str
 
 class LoginResponse(BaseModel):
     id: str
-    email: str
+    username: str
     token: str
