@@ -2,3 +2,5 @@ env
 .env
 .ropeproject
 __pycache__/
+
+keys/

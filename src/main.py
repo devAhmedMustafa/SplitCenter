@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from models.base import Base
 from repositories.session import engine
 
+import firebase_admin
+from firebase_admin import credentials, auth
+
 from features.auth.auth_controller import router as auth_router
 
 Base.metadata.create_all(bind=engine)
@@ -13,6 +16,11 @@ origins = [
     "*",
     "http://localhost:1420"
 ]
+
+
+cred = credentials.Certificate("keys/firebase-adminsdk.json")
+firebase_admin.initialize_app(cred)
+
 
 app.add_middleware(
     CORSMiddleware,

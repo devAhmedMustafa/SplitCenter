@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class TokenData(BaseModel):
+class LoginRequest(BaseModel):
     token: str
     
 

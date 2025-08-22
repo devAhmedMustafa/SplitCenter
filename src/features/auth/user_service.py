@@ -1,34 +1,33 @@
 from fastapi import Depends
-import requests 
+from firebase_admin import auth as firebase_auth
 from .user_repo import UserRepository, get_user_repository
-from config.serttings import settings
 from .jwt import create_jwt_token
 
 class UserService:
     def __init__(self, user_repo: UserRepository):
         self.user_repo = user_repo
 
-    def google_auth(self, google_token: str):
-        google_res = requests.get(
-            f"https://oauth2.googleapis.com/tokeninfo?id_token={google_token}"
-        )
+    def firebase_auth(self, firebase_token: str):
+        try:
+            # Verify the Firebase ID token
+            decoded_token = firebase_auth.verify_id_token(firebase_token)
+        except Exception:
+            raise ValueError("Invalid Firebase token")
 
-        if not google_res.ok:
-            raise ValueError("Invalid Google token")
-        
-        res = google_res.json()
+        email = decoded_token.get("email")
+        if not email:
+            raise ValueError("Email not found in Firebase token")
 
-        if res.get("aud") != settings.GOOGLE_CLIENT_ID:
-            raise ValueError("Invalid Google token")
+        # Ensure email is verified
+        if not decoded_token.get("email_verified", False):
+            raise ValueError("Email is not verified")
 
-        email = res.get("email")
-        if email is None:
-            raise ValueError("Invalid Google token")
-
+        # Get or create user in your database
         user = self.user_repo.get_by_email(email)
         if user is None:
             user = self.user_repo.create(email=email)
 
+        # Generate your own JWT for your backend
         token = create_jwt_token({"email": user.email})
         return user, token
 
