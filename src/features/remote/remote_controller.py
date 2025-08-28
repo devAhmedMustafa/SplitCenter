@@ -14,10 +14,12 @@ async def create_remote(req: LinkRemoteDto,service: RemoteService = Depends(get_
     return repo
 
 @router.get('/{repo_id}')
-async def get_remote(repo_id: int, service: RemoteService = Depends(get_remote_service)):
+async def get_remote(repo_id: str, service: RemoteService = Depends(get_remote_service)):
     try:
         repo = service.get_remote_repo(repo_id)
     except ValueError as e:
-        return {"error": str(e)}
+        return HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        return HTTPException(status_code=500, detail="Internal Server Error")
     return repo
     

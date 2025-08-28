@@ -2,6 +2,7 @@ from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from src.repositories.session import get_db
 from .repository import Repository
+from uuid import UUID
 
 class RemoteRepository:
     def __init__(self, db: Session):
@@ -17,14 +18,17 @@ class RemoteRepository:
             self.db.commit()
             self.db.refresh(repo)
             return repo
+        
         except Exception as e:
             self.db.rollback()
             raise e
     
-    def get_repository(self, repo_id: int) -> Repository:
-        return self.db.query(Repository).filter(Repository.id == repo_id).first()
-    
-    
-    
+    def get_repository(self, repo_id: str) -> Repository:
+        repo = self.db.query(Repository).filter(Repository.id == UUID(repo_id)).first()
+        if not repo:
+            raise ValueError("Repository not found")
+        return repo
+
+
 def get_remote_repository(db: Session = Depends(get_db)) -> RemoteRepository:
     return RemoteRepository(db)
