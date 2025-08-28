@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from models.base import Base
-from repositories.session import engine
+from .models.base import Base
+from .repositories.session import engine
 
 import firebase_admin
-from firebase_admin import credentials, auth
+from firebase_admin import credentials
 
-from features.auth.auth_controller import router as auth_router
+from .features.auth.auth_controller import router as auth_router
+from .features.remote.remote_controller import router as remote_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -31,3 +32,4 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(remote_router)

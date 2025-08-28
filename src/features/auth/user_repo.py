@@ -1,7 +1,7 @@
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from .user import User
-from repositories.session import get_db
+from src.repositories.session import get_db
 
 class UserRepository:
     def __init__(self, db: Session):

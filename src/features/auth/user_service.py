@@ -2,7 +2,7 @@ from fastapi import Depends
 from firebase_admin import auth as firebase_auth
 from .user_repo import UserRepository, get_user_repository
 from .jwt import create_jwt_token
-from utils.hash import hash_password, verify_password
+from src.utils.hash import hash_password, verify_password
 from .user import User
 
 class UserService:
@@ -56,7 +56,7 @@ class UserService:
         if not verify_password(password, user.password):
             raise ValueError("Invalid password")
 
-        token = create_jwt_token({"email": user.username})
+        token = create_jwt_token({"email": user.username, "id": str(user.id)})
         return user, token
 
 def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -> UserService:
