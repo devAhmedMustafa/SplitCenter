@@ -9,7 +9,7 @@ async def create_remote(req: LinkRemoteDto,service: RemoteService = Depends(get_
     try:
         repo = service.link_remote_repo(req)
     except ValueError as e:
-        return HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
     
     return repo
 
@@ -18,8 +18,8 @@ async def get_remote(repo_id: str, service: RemoteService = Depends(get_remote_s
     try:
         repo = service.get_remote_repo(repo_id)
     except ValueError as e:
-        return HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
-        return HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
     return repo
     
