@@ -23,5 +23,9 @@ class PyscmApi:
         return pyscm.checkout(repoPath, commitHash)
 
     @staticmethod
+    def get_commit_history(repoPath: str):
+        return pyscm.getCommitHistory(repoPath)
+
+    @staticmethod
     def negotiate(repoPath: str, requestedCommitId: str):
         return pyscm.negotiate(repoPath, requestedCommitId)
