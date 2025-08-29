@@ -19,7 +19,7 @@ async def negotiate_push(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.post("/push", response_model=dict)
+@router.post("/upload", response_model=dict)
 async def push(
     push_dto: PushRemoteDto,
     push_service: RemotePushService = Depends(get_remote_push_service),
