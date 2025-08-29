@@ -1,8 +1,8 @@
-from fastapi import Depends
+from fastapi import Depends, UploadFile
 from lib.pyscm.pyscm_api import PyscmApi
 from src.features.remote.remote_service import RemoteService, get_remote_service
 
-from .push_remote_dto import NegotiationResponseDto
+from .push_remote_dto import NegotiationResponseDto, PushRemoteDto
 
 class RemotePushService:
 
@@ -31,6 +31,23 @@ class RemotePushService:
         
         except Exception as e:
             raise ValueError(f"Failed to negotiate: {str(e)}")
+        
+
+    async def push(self, repo_id: str, filepathes: list[str], files: list[UploadFile]):
+        try:
+            repo = self.remote_service.get_remote_repo(repo_id)
+
+            if len(filepathes) != len(files):
+                raise ValueError("Filepaths and files count mismatch")
+            
+            for filepath, file in zip(filepathes, files):
+                file_location = f"{repo.url}/{filepath}"
+                with open(file_location, "wb") as f:
+                    content = await file.read()
+                    f.write(content)
+
+        except Exception as e:
+            raise ValueError(f"Failed to push: {str(e)}")
         
 def get_remote_push_service(remote_service: RemoteService = Depends(get_remote_service)) -> RemotePushService:
     return RemotePushService(remote_service)
