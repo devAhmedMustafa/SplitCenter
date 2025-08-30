@@ -9,6 +9,7 @@ from firebase_admin import credentials
 from .features.auth.auth_controller import router as auth_router
 from .features.remote.remote_controller import router as remote_router
 from .features.remote.sync.push.push_controller import router as push_router
+from .features.remote.sync.clone.clone_controller import router as clone_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -35,3 +36,4 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(remote_router)
 app.include_router(push_router)
+app.include_router(clone_router)

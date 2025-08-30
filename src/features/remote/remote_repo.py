@@ -22,9 +22,18 @@ class RemoteRepository:
         except Exception as e:
             self.db.rollback()
             raise e
+        
+    def get_all_repositories(self):
+        return self.db.query(Repository).all()
     
     def get_repository(self, repo_id: str) -> Repository:
         repo = self.db.query(Repository).filter(Repository.id == UUID(repo_id)).first()
+        if not repo:
+            raise ValueError("Repository not found")
+        return repo
+    
+    def get_repository_byurl(self, repo_url: str) -> Repository:
+        repo = self.db.query(Repository).filter(Repository.url == repo_url).first()
         if not repo:
             raise ValueError("Repository not found")
         return repo

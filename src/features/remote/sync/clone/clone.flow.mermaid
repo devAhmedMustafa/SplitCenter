@@ -1,0 +1,12 @@
+sequenceDiagram
+    actor Client
+    participant CloneController
+    participant CloneService
+    participant zipFile
+
+    Client->>+CloneController: /remote/clone/{repoId}
+    CloneController->>+CloneService: cloneRepository(repoId)
+    CloneService->>+zipFile: createZipFromRepo(repoId)
+    zipFile-->>-CloneService: compressedFile
+    CloneService-->>-CloneController: yield from compressedFile
+    CloneController-->>-Client: stream compressed file

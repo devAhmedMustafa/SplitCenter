@@ -22,4 +22,13 @@ async def get_remote(repo_id: str, service: RemoteService = Depends(get_remote_s
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")
     return repo
-    
+
+@router.get('/list/all')
+async def list_all_repos(service: RemoteService = Depends(get_remote_service)):
+    try:
+        repos = service.get_all_remote_repos()
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    return repos

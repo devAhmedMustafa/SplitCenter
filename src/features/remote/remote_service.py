@@ -37,7 +37,12 @@ class RemoteService:
         except Exception as e:
             raise ValueError(f"Failed to link repository: {str(e)}")
         
-    
+    def get_all_remote_repos(self):
+        try:
+            return self.remote_repo.get_all_repositories()
+        except Exception as e:
+            raise ValueError(f"Failed to get all remote repositories: {str(e)}")
+
     def get_remote_repo(self, repo_id: str):
         try:
             return self.remote_repo.get_repository(repo_id)
@@ -45,6 +50,12 @@ class RemoteService:
         except ValueError:
             raise ValueError("Repository not found")
 
+    def get_remote_repo_byurl(self, repo_url: str):
+        try:
+            return self.remote_repo.get_repository_byurl(repo_url)
+        
+        except ValueError:
+            raise ValueError("Repository not found")
 
 
 def get_remote_service(remote_repo: RemoteRepository = Depends(get_remote_repository)) -> RemoteService:
