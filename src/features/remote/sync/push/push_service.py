@@ -4,6 +4,8 @@ from src.features.remote.remote_service import RemoteService, get_remote_service
 
 from .push_remote_dto import NegotiationResponseDto, PushRemoteDto
 
+import os
+
 class RemotePushService:
 
     def __init__(
@@ -41,7 +43,8 @@ class RemotePushService:
                 raise ValueError("Filepaths and files count mismatch")
             
             for filepath, file in zip(filepathes, files):
-                file_location = f"{repo.url}/{filepath}"
+                file_location = os.path.join(repo.url, filepath)
+                os.makedirs(os.path.dirname(file_location), exist_ok=True)
                 with open(file_location, "wb") as f:
                     content = await file.read()
                     f.write(content)
