@@ -8,6 +8,8 @@ from lib.pyscm.pyscm_api import PyscmApi
 
 from uuid import UUID
 
+BASE_REPOSITORY_URL = "./data/repos"
+
 class RemoteService:
     def __init__(self, remote_repo: RemoteRepository = Depends(get_remote_repository)):
         self.remote_repo = remote_repo
@@ -23,7 +25,7 @@ class RemoteService:
             user_id = user.get("id")
             username = user.get("email")
 
-            url = f"./data/repos/{username}/{link_remote_dto.repo_name}"
+            url = f"{BASE_REPOSITORY_URL}/{username}/{link_remote_dto.repo_name}"
             PyscmApi.init(url)
             
             new_repo = Repository(
@@ -54,6 +56,15 @@ class RemoteService:
         try:
             return self.remote_repo.get_repository_byurl(repo_url)
         
+        except ValueError:
+            raise ValueError("Repository not found")
+
+    def get_remote_repo_by_userrepo(self, user_id: str, repo_name: str):
+        try:
+            return self.remote_repo.get_repository_byurl(
+                f"{BASE_REPOSITORY_URL}/{user_id}/{repo_name}"
+            )
+
         except ValueError:
             raise ValueError("Repository not found")
 

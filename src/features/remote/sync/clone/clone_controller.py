@@ -4,7 +4,7 @@ from .clone_service import RemoteCloneService, get_clone_service
 
 router = APIRouter(prefix="/remote/clone", tags=["remote", "clone"])
 
-@router.get("/fetch")
+@router.post("/fetch")
 async def clone_repository(repo_url: str = Form(...), service: RemoteCloneService = Depends(get_clone_service)):
     try:
         compressed_file, repoId = await service.clone_repository(repo_url)
