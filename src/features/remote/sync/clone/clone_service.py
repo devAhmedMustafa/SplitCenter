@@ -23,9 +23,10 @@ class RemoteCloneService:
                         continue
                     
                     full_path = repo.url + "/" + filepath
+
                     with open(full_path, "rb") as f:
                         file_data = f.read()
-                        zipf.writestr(filepath, file_data)
+                        zipf.writestr(f"./{filepath}", file_data)
 
             buffer.seek(0)
             return buffer, repo.id
