@@ -1,0 +1,12 @@
+sequenceDiagram
+    actor Client
+    participant PullController
+    participant RemotePullService
+    participant zipFile
+
+    Client->>+PullController: GET /remote/pull/{repoId}?commit={commitId}
+    PullController->>+RemotePullService: pullRepository(repoId, commitId)
+    RemotePullService->>+zipFile: createZipFromRepo(buffer)
+    zipFile-->>-RemotePullService: compressedFile
+    RemotePullService-->>-PullController: yield from compressedFile
+    PullController-->>-Client: stream compressed file
