@@ -6,7 +6,7 @@ from src.utils.hash import decode_string
 router = APIRouter("/storage", tags=["upload"])
 
 
-@router.post("/upload")
+@router.put("/upload")
 async def upload_file(
     file: UploadFile = File(...),
     filepath: str = Query(...)):
