@@ -1,27 +1,24 @@
-from fastapi import APIRouter, UploadFile, File, Form
+from fastapi import APIRouter, UploadFile, File, Query
 from fastapi.responses import StreamingResponse
 from io import BytesIO
+from src.utils.hash import decode_string
 
-router = APIRouter("/upload", tags=["upload"])
+router = APIRouter("/storage", tags=["upload"])
 
 
-@router.post("/")
-async def upload_files(
-    files: list[UploadFile] = File(...), 
-    filepaths : list[str] = Form,):
+@router.post("/upload")
+async def upload_file(
+    file: UploadFile = File(...),
+    filepath: str = Query(...)):
 
-    uploaded_file_paths = []
-    for filepath, file in zip(filepaths, files):
+    file_location = f".data/{decode_string(filepath)}"
+    with open(file_location, "wb") as f:
+        content = await file.read()
+        f.write(content)
 
-        file_location = f".data/{filepath}"
-        with open(file_location, "wb") as f:
-            content = await file.read()
-            f.write(content)
-        uploaded_file_paths.append(file_location)
-        
-    return {"file_paths": uploaded_file_paths}
+    return {"file_url": file_location}
 
-@router.get("/{filepath}")
+@router.get("/download/{filepath}")
 async def get_file(filepath: str):
     file_location = f".data/{filepath}"
     try:

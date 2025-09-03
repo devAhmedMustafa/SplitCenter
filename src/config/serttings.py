@@ -13,5 +13,6 @@ class Settings:
     BUCKET_NAME = os.getenv("BUCKET_NAME")
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    ENV = os.getenv("ENV", "development")
 
 settings = Settings()

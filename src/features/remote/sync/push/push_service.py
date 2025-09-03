@@ -1,10 +1,10 @@
-from fastapi import Depends, UploadFile
+from fastapi import Depends
 from lib.pyscm.pyscm_api import PyscmApi
 from src.features.remote.remote_service import RemoteService, get_remote_service
-
-from .push_remote_dto import NegotiationResponseDto, PushRemoteDto
-
-import os
+from .push_remote_dto import NegotiationResponseDto
+from src.utils.aws_s3 import S3Client
+from config.serttings import settings
+from src.utils.hash import encode_string
 
 class RemotePushService:
 
@@ -35,19 +35,24 @@ class RemotePushService:
             raise ValueError(f"Failed to negotiate: {str(e)}")
         
 
-    async def push(self, repo_id: str, filepathes: list[str], files: list[UploadFile]):
+    async def push(self, repo_id: str, filepathes: list[str]):
         try:
-            repo = self.remote_service.get_remote_repo(repo_id)
 
-            if len(filepathes) != len(files):
-                raise ValueError("Filepaths and files count mismatch")
-            
-            for filepath, file in zip(filepathes, files):
-                file_location = os.path.join(repo.url, filepath)
-                os.makedirs(os.path.dirname(file_location), exist_ok=True)
-                with open(file_location, "wb") as f:
-                    content = await file.read()
-                    f.write(content)
+            presigned_urls: list[str] = []
+
+            if settings.ENV == "production":
+                s3_client = S3Client()
+                for filepath in filepathes:
+                    presigned_url = s3_client.generate_presigned_url("repos", f"{repo_id}/{filepath}", operation_name="put_object")
+                    presigned_urls.append(presigned_url)
+
+            else:
+                for filepath in filepathes:
+                    hashed_path = encode_string(f"repos/{repo_id}/{filepath}")
+                    presigned_url = f"http://localhost:8000/storage/upload?path={hashed_path}"
+                    presigned_urls.append(presigned_url)
+
+            return presigned_urls
 
         except Exception as e:
             raise ValueError(f"Failed to push: {str(e)}")
