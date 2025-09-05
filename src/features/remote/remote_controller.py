@@ -1,0 +1,43 @@
+from fastapi import APIRouter, Depends, HTTPException
+from .link_remote_dtos import LinkRemoteDto
+from .remote_service import RemoteService, get_remote_service
+
+router = APIRouter(prefix="/remote", tags=["remote"])
+
+@router.post('/link')
+async def create_remote(req: LinkRemoteDto,service: RemoteService = Depends(get_remote_service)):
+    try:
+        repo = service.link_remote_repo(req)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+    return repo
+
+@router.get('/{repo_id}')
+async def get_remote(repo_id: str, service: RemoteService = Depends(get_remote_service)):
+    try:
+        repo = service.get_remote_repo(repo_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    return repo
+
+@router.get('/list/all')
+async def list_all_repos(service: RemoteService = Depends(get_remote_service)):
+    try:
+        repos = service.get_all_remote_repos()
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    return repos
+
+@router.get('/{user_id}/{repo_name}')
+async def get_remote_repo_by_userrepo(user_id: str, repo_name: str, service: RemoteService = Depends(get_remote_service)):
+    try:
+        return service.get_remote_repo_by_userrepo(user_id, repo_name)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
