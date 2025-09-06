@@ -58,6 +58,9 @@ class UserService:
 
         token = create_jwt_token({"email": user.username, "id": str(user.id)})
         return user, token
+    
+    def search_user_by_username(self, username: str):
+        return self.user_repo.get_by_username(username)
 
 def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -> UserService:
     return UserService(user_repo)
