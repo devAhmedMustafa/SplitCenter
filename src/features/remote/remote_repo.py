@@ -37,6 +37,9 @@ class RemoteRepository:
         if not repo:
             raise ValueError("Repository not found")
         return repo
+    
+    def get_repositories_by_user(self, user_id: str):
+        return self.db.query(Repository).filter(Repository.owner == UUID(user_id)).all()
 
 
 def get_remote_repository(db: Session = Depends(get_db)) -> RemoteRepository:
