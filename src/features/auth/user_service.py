@@ -61,6 +61,9 @@ class UserService:
     
     def search_user_by_username(self, username: str):
         return self.user_repo.get_by_username(username)
+    
+    def search_users(self, username: str):
+        return self.user_repo.get_similar_usernames(username)
 
 def get_user_service(user_repo: UserRepository = Depends(get_user_repository)) -> UserService:
     return UserService(user_repo)

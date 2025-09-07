@@ -30,3 +30,8 @@ def get_by_username(username: str = Query(...), service: UserService = Depends(g
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return UserResponse(id=str(user.id), username=user.username)
+
+@router.get("/search", response_model=list[UserResponse])
+def search_users(username: str = Query(...), service: UserService = Depends(get_user_service)):
+    users = service.search_users(username)
+    return [UserResponse(id=str(user.id), username=user.username) for user in users]
