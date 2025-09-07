@@ -67,6 +67,13 @@ class RemoteService:
 
         except ValueError:
             raise ValueError("Repository not found")
+        
+    def get_repos_by_user(self, user_id: str):
+        try:
+            return self.remote_repo.get_repositories_by_user(user_id)
+        
+        except Exception as e:
+            raise ValueError(f"Failed to get repositories for user: {str(e)}")
 
 
 def get_remote_service(remote_repo: RemoteRepository = Depends(get_remote_repository)) -> RemoteService:

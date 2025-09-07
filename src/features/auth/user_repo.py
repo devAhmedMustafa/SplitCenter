@@ -15,6 +15,9 @@ class UserRepository:
         self.db.commit()
         self.db.refresh(user)
         return user
+
+    def get_similar_usernames(self, username: str):
+        return self.db.query(User).filter(User.username.like(f"{username}%")).all()
     
 
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
