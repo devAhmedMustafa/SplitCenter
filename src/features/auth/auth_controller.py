@@ -24,8 +24,8 @@ def login(user_data: LoginRequest, service: UserService = Depends(get_user_servi
 
     return LoginResponse(id=str(user.id), username=user.username, token=token)
 
-@router.get("/get", response_model=UserResponse)
-def get_by_username(username: str = Query(...), service: UserService = Depends(get_user_service)):
+@router.get("/user/get/{username}", response_model=UserResponse)
+def get_by_username(username: str, service: UserService = Depends(get_user_service)):
     user = service.search_user_by_username(username)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

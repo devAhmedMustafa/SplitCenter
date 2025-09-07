@@ -44,7 +44,7 @@ async def get_remote_repo_by_userrepo(user_id: str, repo_name: str, service: Rem
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-@router.get('/user/{user_id}', response_model=list[RepoResponse])
+@router.get('/user/repos/{user_id}')
 async def get_repos_by_user(user_id: str, service: RemoteService = Depends(get_remote_service)):
     try:
         repos = service.get_repos_by_user(user_id)
