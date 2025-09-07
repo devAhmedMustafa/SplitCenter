@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from features.remote.repo_dtos import RepoResponse
+from .repo_dtos import RepoResponse
 from .link_remote_dtos import LinkRemoteDto
 from .remote_service import RemoteService, get_remote_service
 
